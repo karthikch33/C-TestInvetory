@@ -1,0 +1,540 @@
+.logo{
+  height: 32px;
+  margin: 16px;
+  background: rgba(255,255,255,0.3);
+}
+
+#root{
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.trigger{
+  padding: 0.24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.error{
+  color:red
+}
+
+.trigger:hover{
+  color: #1830ff;
+}
+
+.ant-layout-header{
+  background-color: #f7f7f7 !important;
+  /* background-color: #f7f7f7 !important; */
+}
+
+.ant-layout-content{
+  margin: 0px 0px !important;
+  /* padding: 24px !important; */
+}
+
+.ant-layout-sider{
+  flex: 0 0 250px !important;
+  max-width: 250px !important;
+  min-width: 250px !important;
+  width: 250px !important;
+}
+.ant-layout-sider-collapsed{
+  flex: 0 0 80px !important;
+  max-width: 80px !important;
+  min-width: 80px !important;
+  width: 80px !important;
+}
+
+.sm-logo{
+  display: none;
+  transition: .3s;
+}
+.ant-layout-sider-collapsed .sm-logo{
+  transition: .3s;
+  display: block;
+}
+
+.ant-layout-header h5{
+  line-height: 30px;
+}
+.ant-layout-header p{
+  line-height: 30px;
+}
+
+.ant-layout-header div .badge{
+  top:15%;
+  right: -6px;
+  background-color: #23f0fe;
+}
+
+.background-image {  
+  position: absolute; 
+  top: 0; 
+  left: 0;   
+  right: 0;  
+  bottom: 88px; 
+  background-image: url('https://www.qad.com/documents/images/partner-logos/yash-technologies-logo.png');   
+  background-size: contain;  
+  background-repeat: no-repeat;   
+  background-position: center;
+  opacity: 0.05; 
+  z-index: 0;  
+}  
+
+.content {  
+  position: relative;   
+  z-index: 1;  
+  color: black;  
+}  
+
+.lg-logo{
+  display: block;
+  transition: .3s;
+}
+.ant-layout-sider-collapsed .lg-logo{
+  display: none;
+  transition: .3s;
+}
+
+.logo{
+  background-color: #39a9f9 !important;
+  margin: 0;
+  height: 70px;
+}
+
+:where(.css-dev-only-do-not-override-1htoz2s).ant-menu-dark .ant-menu-item-selected, :where(.css-dev-only-do-not-override-1htoz2s).ant-menu-dark>.ant-menu .ant-menu-item-selected {
+  background-color: inherit !important;
+}
+
+.options_header{
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+}
+
+.options_header_select{
+  width: 200px;
+  padding: 3px;
+  margin-right: 10px;
+}
+
+.ant-layout{
+  height: 100vh;
+}
+
+.ant-layout-sider{
+  height: 100vh;
+  overflow-y: scroll;
+}
+
+
+
+.ant-layout-sider::-webkit-scrollbar{
+  width: 0vh;
+}
+
+main::-webkit-scrollbar{
+ width: 0vh;
+}
+
+
+.error {  
+  color: red;  
+  margin-left: 10px;  
+  font-size: 12px;  
+}
+
+
+.circle {  
+  display: inline-block;  
+  width: 12px;        
+  height: 12px;       
+  border-radius: 50%; 
+  margin-right: 8px;  
+}  
+
+
+.green {  
+  background-color: green; 
+  margin-bottom: 10px; 
+}  
+
+.red {  
+  background-color: red; 
+  margin-bottom: 10px; 
+}  
+
+
+:where(.css-dev-only-do-not-override-1htoz2s).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-dev-only-do-not-override-1htoz2s).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  background-color: #333767 !important;
+}
+
+:where(.css-dev-only-do-not-override-1htoz2s).ant-radio-wrapper .ant-radio-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 1;
+}
+
+
+/* General table styling */
+.ant-table-wrapper{
+  width: 100% !important;
+  overflow-X:'scroll' !important
+}
+ 
+/* Header styling */
+
+
+.Connection .ant-table-thead > tr > th,.flatFile  .ant-table-thead > tr > th,.Manage_Project .ant-table-thead > tr > th,
+.SuccessFactors_Table .ant-table-thead > tr > th,.HanaTable .ant-table-thead > tr > th,.sapTable .ant-table-thead > tr > th,
+.Manage_BussinessRules_table .ant-table-thead > tr > th,.View_Bussiness_Rule_Table .ant-table-thead > tr > th,
+.SegmentTables .ant-table-thead > tr > th, .WorkSpaceTable .ant-table-thead > tr > th,
+.WorkSpaceTargetTable .ant-table-thead > tr > th, .PreLoad_Table .ant-table-thead > tr > th,
+.report_table .ant-table-thead > tr > th{
+  background-color: #333767 !important;
+  color: white !important;
+  padding: 0 0 0 0 !important;
+  height: 30px !important;
+  min-width: 90px !important;
+  text-align: center;
+  font-size: 13px;
+  border: 5px solid #333767 !important;
+} 
+
+
+
+.Connection .ant-table-tbody > tr > td,.flatFile  .ant-table-tbody > tr > td, .Manage_Project .ant-table-tbody > tr > td,
+.SuccessFactors_Table .ant-table-tbody > tr > td, .HanaTable .ant-table-tbody > tr > td, .sapTable  .ant-table-tbody > tr > td,
+.Manage_BussinessRules_table .ant-table-tbody > tr > td,.View_Bussiness_Rule_Table .ant-table-tbody > tr > td,
+.SegmentTables .ant-table-tbody > tr > td, .WorkSpaceTable .ant-table-tbody > tr > td,
+.WorkSpaceTargetTable .ant-table-tbody > tr > td , .PreLoad_Table .ant-table-tbody > tr > td
+{
+  color: #000; 
+  padding: 0 0 5px 0 !important;
+  min-width: 90px !important;
+  border: 1px solid rgba(140, 137, 137, 0.632) !important;
+}
+
+.flatFile .ant-table-tbody > tr > td, .Manage_Project .ant-table-tbody > tr > td{
+  text-align : center
+}
+
+.report_table{
+  height: 70vh !important;
+  overflow-y: scroll !important;
+}
+
+.report_table .ant-table-tbody > tr > td {
+  color: #000; 
+  padding: 7px 0px 7px 0px !important;
+  border: 0.1px solid #fff;
+}
+
+.first-child-row > td {
+  border-top: 2px solid #68a1d5 !important;
+  background: #f6fbff;
+}
+
+.open-row > td {
+  background-color : rgb(253, 253, 182) !important;
+}
+
+.last-child-row > td {
+  border-bottom: 2px solid #68a1d5 !important;
+  background: #f6fbff;
+}
+
+.ant-table-row-level-1:hover > td {
+  background-color: #e3f2fd !important; /* Light blue, adjust as needed */
+  cursor: pointer;
+}
+
+.report_table .ant-table-tbody{
+  padding : 20px !important;
+}
+
+.logo-color{
+  background-color: #fff !important;
+}
+
+.managebussinessrules .ant-table .ant-table-tbody > tr > td:nth-child(2) .link-button{
+  text-align: start !important;
+  display: flex !important;
+  justify-content: start;
+}
+
+
+.ant-table .ant-table-thead > tr > th:nth-last-child() {  
+  text-align: center; 
+}
+
+.options_header{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+/* .options_header::-webkit-scrollbar {  
+  display: none;
+}   */
+
+
+.ant-tabs-tab{
+  border: 1px solid #80808068 !important;
+}
+
+.bussiness_rules_table .ant-table .ant-table-thead > tr > th, .WorkSpaceTable .ant-table .ant-table-thead > tr > th{
+  border: 1px solid rgba(140, 137, 137, 0.632) !important;
+  text-align: center;
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td{
+  width: 150px !important;
+  padding: 0px !important;
+  border: 1px solid rgba(140, 137, 137, 0.112) !important;
+}
+
+.WorkSpaceTable .ant-table .ant-table-tbody > tr > td{
+  width: 150px !important;
+  padding: 0px !important;
+  background-color: #fff !important;
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(1){  
+  text-align: center; 
+  width : 85px !important;
+}
+
+.PreLoad_Table .ant-table .ant-table-tbody > tr > td:nth-child(1){
+  text-align: center; 
+  width: 10px !important;
+  min-width: 27px !important;
+  max-width: 27px !important;
+}
+
+.PreLoad_Table .ant-table .ant-table-thead > tr > th:nth-child(1){
+  text-align: center; 
+  width: 10px !important;
+  min-width: 27px !important;
+  max-width: 27px !important;
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-last-child(){  
+  text-align: center; 
+  width : 85px !important;
+}
+
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(5), .WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(5){  
+  text-align: center; 
+  width: 60px !important;
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(6), .WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(6){  
+  text-align: center; 
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(9), .WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(9){  
+  text-align: center; 
+}
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(7) label,
+.WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(7) label {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+
+.bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(8), .WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(8){  
+  text-align: center; 
+}
+
+.WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(1){  
+  text-align: center; 
+}
+
+.WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(8){  
+  text-align: center; 
+}
+
+.WorkSpaceTable .ant-table .ant-table-tbody > tr > td:nth-child(7){  
+  min-width: 162px !important;
+  text-align: center; 
+}
+
+.sapTable .ant-table .ant-table-tbody > tr > td:nth-child(1){
+  padding-left: 20px !important;
+}
+
+.table-container2 {
+  position: relative;
+  flex: 1;
+  max-height: 50vh !important;
+}
+
+.disabled-button {  
+  background-color: gray;
+  color: lightgray; 
+}  
+
+.disabled-button:not(:disabled) {  
+  background-color: white; 
+  color: rgba(0, 0, 0, 0.9);
+}  
+
+
+.disabled-button:disabled {  
+  background-color: white !important; 
+  color: rgba(0, 0, 0, 0.648) !important;
+  opacity: 1; 
+  cursor: text; 
+}  
+
+.WorkSpaceTargetTable .ant-table-thead > tr > th {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  font-size: 10px !important;
+  height: 30px !important;
+  border: 1px solid rgba(140, 137, 137, 0.632) !important;
+  text-align: center;
+  z-index: 1;
+}
+
+.WorkSpaceTargetTable .ant-table-tbody > tr > td {
+  border: 1px solid rgba(140, 137, 137, 0.13) !important;
+  text-align: center;
+}
+
+.table-container {
+  max-height: 100%;
+  position: relative;
+}
+
+.WorkSpaceTable .ant-table-thead > tr > th {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  font-size: 10px !important;
+  height: 30px !important;
+  z-index: 1;
+}
+
+.WorkSpaceTable .ant-table-tbody > tr > td{
+  padding: 0px !important;
+  margin: 0px !important;
+  font-size: 10px;
+  min-height: 0px !important;
+}
+
+
+
+.form-control-addons::placeholder{
+  color:rgb(216, 216, 216) !important;
+}
+
+
+.fixed-height-textarea {  
+  font-weight: normal; 
+  line-height: normal;  
+  padding: 10px;  
+  margin: 0;  
+  display: inline-block;  
+  cursor: text;  
+
+  width: 350px;  
+  height: 150px;  
+  resize: none;   
+  
+  color: fieldtext;   
+  background-color: field; 
+  
+  border-width: 1px;  
+  border-style: solid;  
+  border-color: rgb(118, 118, 118);   
+  border-image: initial;  
+
+  border-radius: 10px;
+
+  overflow-wrap: break-word; 
+  white-space: pre-wrap; 
+  text-align: start;
+}    
+
+.fixed-height-textarea:focus{
+  box-shadow: 0 0 2px rgba(17, 129, 235, 0.913);
+  outline: none;
+
+}
+
+.position-absolute {  
+  position: absolute;  
+}
+
+.scrollbar::-webkit-scrollbar{
+  width: 0px;
+  height: 0px !important;
+}
+
+.SegmentTables .ant-table .ant-table-tbody > tr > td{
+  padding-left: 34px !important;
+}
+
+
+.lightgreen {
+  background-color: #0fee0beb;
+}
+
+.lightyellow{
+  background-color: #f9e000;
+}
+
+.lightred{
+  background-color: #ff0000;
+}
+
+.lightblue{
+  background-color: #1369ff;
+}
+
+.css-gskiyu-MuiResponsiveChart-container{
+  height: 250px !important;
+  padding-left: 20px !important;
+}
+
+/* .MuiChartsLegend-series-0 , .MuiChartsLegend-series-1{
+  transform: translate(340.00925827026367 185) !important;
+} */
+
+.PreLoad_Table .ant-table-tbody > tr > td{ 
+  padding: 5px !important;
+  border-bottom: 1px solid #ddd !important;
+  border-right: 1px solid #ddd !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+.PreLoad_Table .ant-table-tbody > tr > td:nth-child(odd) { 
+  background: #ffffff; 
+  padding: 5px !important;  
+}
+
+
+/* Global CSS */
+.ant-dropdown, .ant-dropdown-menu, .ant-select-dropdown, .ant-select-dropdown .ant-select-item {
+  background: #fff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.ant-dropdown-menu, .ant-select-dropdown {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.05);
+}
