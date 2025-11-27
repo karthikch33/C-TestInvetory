@@ -1,3 +1,43 @@
+/* LIGHT THEME */
+:root {
+  --bg: #f5f6fa;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --text-soft: #555;
+  --border: #e8e8e8;
+  --header-bg: #f7f7f7;
+  --table-header: #2d3e50;
+  --table-row: #ffffff;
+  --table-text : #ffffff;
+  --sidebar-bg: #ffffff;
+   --hover-light: rgba(0,0,0,0.06);
+}
+
+/* DARK THEME */
+.dark {
+  --bg: #0d0d0d;
+  --card-bg: #1a1a1a;
+  --text: #ffffff;
+  --text-soft: #aaaaaa;
+  --border: #333;
+  --header-bg: #141414;
+  --table-header: #1e1e1e;
+  --table-row: #141414;
+  --sidebar-bg: #131313;
+  --hover-light: rgba(255,255,255,0.12);
+}
+
+* {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.theme-text {
+  color: var(--text) !important;
+}
+
+
+
+
 .logo{
   height: 32px;
   margin: 16px;
@@ -26,8 +66,8 @@
 }
 
 .ant-layout-header{
-  background-color: #f7f7f7 !important;
-  /* background-color: #f7f7f7 !important; */
+  background-color: var(--header-bg) !important;
+  color: var(--text) !important;
 }
 
 .ant-layout-content{
@@ -38,7 +78,7 @@
 .ant-layout-sider{
   flex: 0 0 250px !important;
   max-width: 250px !important;
-  background-color: #ffffff !important;
+  background-color: var(--sidebar-bg) !important;
   min-width: 250px !important;
   width: 250px !important;
 }
@@ -197,14 +237,14 @@ main::-webkit-scrollbar{
 .SegmentTables .ant-table-thead > tr > th, .WorkSpaceTable .ant-table-thead > tr > th,
 .WorkSpaceTargetTable .ant-table-thead > tr > th, .PreLoad_Table .ant-table-thead > tr > th,
 .report_table .ant-table-thead > tr > th{
-  background-color: #2d3e50  !important;
-  color: white !important;
   padding: 0 0 0 0 !important;
   height: 30px !important;
   min-width: 90px !important;
   text-align: center;
   font-size: 13px;
-  border: 5px solid #2d3e50  !important;
+  background-color: var(--table-header) !important;
+  border: 5px solid var(--table-header) !important;
+  color: var(--table-text) !important;
 } 
 
 
@@ -215,9 +255,11 @@ main::-webkit-scrollbar{
 .SegmentTables .ant-table-tbody > tr > td, .WorkSpaceTable .ant-table-tbody > tr > td,
 .WorkSpaceTargetTable .ant-table-tbody > tr > td , .PreLoad_Table .ant-table-tbody > tr > td
 {
-  color: #000; 
   padding: 0 0 5px 0 !important;
   min-width: 90px !important;
+  color: var(--text);
+  border-color: var(--border) !important;
+  background-color: var(--table-row) !important;
 }
 
 .flatFile .ant-table-tbody > tr > td, .Manage_Project .ant-table-tbody > tr > td{
@@ -302,7 +344,7 @@ main::-webkit-scrollbar{
 .WorkSpaceTable .ant-table .ant-table-tbody > tr > td{
   width: 150px !important;
   padding: 0px !important;
-  background-color: #fff !important;
+  background-color: var(--card-bg) !important;
 }
 
 .bussiness_rules_table .ant-table .ant-table-tbody > tr > td:nth-child(1){  
@@ -454,8 +496,10 @@ main::-webkit-scrollbar{
   height: 150px;  
   resize: none;   
   
-  color: fieldtext;   
-  background-color: field; 
+  background-color: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+
   
   border-width: 1px;  
   border-style: solid;  
@@ -532,7 +576,8 @@ main::-webkit-scrollbar{
 
 /* Global CSS */
 .ant-dropdown, .ant-dropdown-menu, .ant-select-dropdown, .ant-select-dropdown .ant-select-item {
-  background: #fff !important;
+  background: var(--card-bg) !important;
+  color: var(--text) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }

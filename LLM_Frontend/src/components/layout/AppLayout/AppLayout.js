@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Layout } from "antd";
+import { ConfigProvider, theme } from "antd";
+import { useSelector } from "react-redux";
 
 import AppHeader from "../../layout/AppHeader/AppHeader";
 import SideMenu from "../../layout/SideMenu/SideMenu";
@@ -24,12 +26,28 @@ export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(true);
   const [selectedKey, setSelectedKey] = useState("/");
 
+  const isDark = useSelector((state) => state.theme.isDark);
+
+    useEffect(() => {
+    if (isDark) document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
+  }, [isDark]);
+
+
   const handleMenuClick = (e) => {
     setSelectedKey(e.key);
     navigate(e.key);
   };
 
   return (
+    <ConfigProvider
+      theme={{
+        algorithm: isDark
+          ? theme.darkAlgorithm
+          : theme.defaultAlgorithm,
+      }}
+    >
+
     <Layout>
       <ToastContainer position="top-center" autoClose={2500} />
       
@@ -49,7 +67,7 @@ export default function AppLayout() {
             overflowY:"scroll",
              backgroundRepeat:"no-repeat", 
              backgroundSize:"cover",
-             backgroundColor:"#F7F9FC",
+             backgroundColor: "var(--bg)"
               // backgroundImage: 'url("https://www.yash.com/wp-content/themes/html5blank-stable/images/services/service-offeringBG.png")'
           }}
           >
@@ -58,6 +76,7 @@ export default function AppLayout() {
         </Layout>
       </Layout>
     </Layout>
+    </ConfigProvider>
   );
 }
 

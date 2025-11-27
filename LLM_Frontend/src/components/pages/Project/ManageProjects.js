@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';  
-import { Input, Table, Button, message, Radio, Modal, Space, Select } from 'antd';  
+import { useEffect, useState } from 'react';  
+import { Input, Table, Button, message, Modal, Space } from 'antd';  
 import { useSelector, useDispatch } from 'react-redux';  
 import { useFormik } from "formik";   
 import * as yup from "yup"; 
@@ -8,7 +8,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import CustomInput from '../CustomInput';
 import { FaFolderOpen } from "react-icons/fa";
 import Meta from '../../utils/Meta';
-// import './ManageProjects.css'
 
 const ManageProjects = () => {  
     const {Search} = Input
@@ -123,19 +122,7 @@ const ManageProjects = () => {
         },
       };
 
-    const columns = [  
-        // {  
-        //     title: 'Select',  
-        //     dataIndex: 'selecteditem',  
-        //     render: (text, record) => (  
-        //         <div style={{ display: 'flex', justifyContent: 'center' }}>  
-        //             <Radio  
-        //                 checked={selectedKey === record.project_id}  
-        //                 onChange={() => handleRadioChange(record)}  
-        //             />  
-        //         </div>  
-        //     )  
-        // },  
+    const columns = [ 
         {  
             title: 'Project Name',  
             dataIndex: 'project_name',  
@@ -356,6 +343,7 @@ const ManageProjects = () => {
             alignItems: "center",
             marginBottom: 20,
             width: "100%",
+            color: "var(--text)",
         }}
         >
         {/* LEFT SIDE — PAGE TITLE */}
@@ -364,21 +352,22 @@ const ManageProjects = () => {
             style={{
             width: 42,
             height: 42,
-            background: "linear-gradient(135deg, #e0f2fe, #ffffff)",
+            background: "var(--card-bg)",
             borderRadius: 12,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            border: "1px solid var(--border)"
             }}
         >
             <FaFolderOpen size={20} color="#0ea5e9" />
         </div>
 
         <div>
-            <h2 style={{ margin: 0, fontWeight: 600, fontSize: 22 }}>
+            <h2 style={{ margin: 0, fontWeight: 600, fontSize: 22, color: "var(--text)" }}>
             Projects
             </h2>
-            <p style={{ margin: 0, color: "#666", fontSize: 13 }}>
+            <p style={{ margin: 0, color: "#666", fontSize: 13,color: "var(--text-soft)" }}>
             Manage all your test inventory projects
             </p>
         </div>
@@ -396,21 +385,27 @@ const ManageProjects = () => {
             onSearch={handleSearch}
             onChange={handleSearchChange}
             allowClear
-            style={{ width: 260 }}
+            style={{ width: 260,background: "var(--card-bg)",
+    color: "var(--text)", }}
             />
         </div>
         </div>
         
 
-        <Table 
-        className='Manage_Project'
-        columns={columns} 
+            <Table
+        className="Manage_Project"
+        columns={columns}
         rowKey="project_id"
         rowSelection={rowSelection}
         dataSource={projectData}
-        pagination={{ pageSize: 16 }} 
-        style={{overflowX:"auto"}}
-        /> 
+        pagination={{ pageSize: 16 }}
+        style={{
+            overflowX: "auto",
+            // background: "var(--card-bg)",
+            color: "var(--text)",
+        }}
+        />
+
          
         <Modal  
             title="Create Project"  
@@ -464,6 +459,11 @@ const ManageProjects = () => {
                             value={formik?.values?.project_name}  
                             onChange={formik?.handleChange}  
                             onBlur={formik?.handleBlur}  
+                            style={{
+                            background: "var(--card-bg)",
+                            color: "var(--text)",
+                            borderColor: "var(--border)",
+                        }}
                         />  
                         <div className="error">  
                             {formik?.touched?.project_name && formik?.errors?.project_name}  
@@ -480,6 +480,11 @@ const ManageProjects = () => {
                             value={formik?.values?.project_description}   
                             onChange={formik?.handleChange}   
                             onBlur={formik?.handleBlur}  
+                            style={{
+                            background: "var(--card-bg)",
+                            color: "var(--text)",
+                            borderColor: "var(--border)",
+                        }}
                         />  
                         <div className="error">  
                             {formik?.touched.project_description && formik?.errors?.project_description}  
