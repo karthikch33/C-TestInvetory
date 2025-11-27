@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Input, Table, Button, message, Radio, Modal, Space, Select } from 'antd';  
 import { useSelector, useDispatch } from 'react-redux';  
 import { useFormik } from "formik";   
-import * as yup from "yup";  
+import * as yup from "yup"; 
 import { createProjectSlice, deleteProjectsSlice, getProjectsSlice, updateProjectsSlice } from '../../features/Project/projectSlice';  
 import { toast, ToastContainer } from 'react-toastify';
 import CustomInput from '../CustomInput';
+import { FaFolderOpen } from "react-icons/fa";
 import Meta from '../../utils/Meta';
+// import './ManageProjects.css'
 
 const ManageProjects = () => {  
     const {Search} = Input
@@ -112,19 +114,28 @@ const ManageProjects = () => {
         enableReinitialize: true,
     }); 
 
+    const rowSelection = {
+        type: "radio",
+        selectedRowKeys: selectedKey ? [selectedKey] : [],
+        onChange: (keys, rows) => {
+          setSelectedKey(keys[0]);
+          setSelectedRecord(rows[0]);
+        },
+      };
+
     const columns = [  
-        {  
-            title: 'Select',  
-            dataIndex: 'selecteditem',  
-            render: (text, record) => (  
-                <div style={{ display: 'flex', justifyContent: 'center' }}>  
-                    <Radio  
-                        checked={selectedKey === record.project_id}  
-                        onChange={() => handleRadioChange(record)}  
-                    />  
-                </div>  
-            )  
-        },  
+        // {  
+        //     title: 'Select',  
+        //     dataIndex: 'selecteditem',  
+        //     render: (text, record) => (  
+        //         <div style={{ display: 'flex', justifyContent: 'center' }}>  
+        //             <Radio  
+        //                 checked={selectedKey === record.project_id}  
+        //                 onChange={() => handleRadioChange(record)}  
+        //             />  
+        //         </div>  
+        //     )  
+        // },  
         {  
             title: 'Project Name',  
             dataIndex: 'project_name',  
@@ -173,11 +184,6 @@ const ManageProjects = () => {
     
         return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;  
     } 
-
-    const handleRadioChange = (record) => {  
-        setSelectedKey(record.project_id);  
-        setSelectedRecord(record);  
-    };  
 
     const showEditModal = () => { 
         if(selectedRecord === null)
@@ -331,32 +337,80 @@ const ManageProjects = () => {
             })
         }
     }; 
-
-
+      
     return (  
         <div className='w-100 p-4'>  
         <Meta title="Projects"/>
+
         <ToastContainer
         position='top-center' autoClose={2500} hideProgressBar={false} closeOnClick newestOnTop={true} rtl={false} pauseOnFocusLoss
         draggable  pauseOnHover theme='light'/> 
         {contextHolder}    
 
+
         <div className="container-fluid">
-        <div className='d-flex justify-content-between align-items-center mb-2' style={{overflowX:"auto"}}>
+        <div
+        style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 20,
+            width: "100%",
+        }}
+        >
+        {/* LEFT SIDE — PAGE TITLE */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+            style={{
+            width: 42,
+            height: 42,
+            background: "linear-gradient(135deg, #e0f2fe, #ffffff)",
+            borderRadius: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            }}
+        >
+            <FaFolderOpen size={20} color="#0ea5e9" />
+        </div>
+
         <div>
-        <label style={{ color: "skyblue", fontSize: "20px",marginRight:"20px",marginLeft:"20px" }}>Projects</label>  
+            <h2 style={{ margin: 0, fontWeight: 600, fontSize: 22 }}>
+            Projects
+            </h2>
+            <p style={{ margin: 0, color: "#666", fontSize: 13 }}>
+            Manage all your test inventory projects
+            </p>
         </div>
-        <div className="d-flex mx-4 gap-3">  
-        <Button className='primary' style={{fontSize:'14px'}} onClick={showCreateModal}> Create  </Button>  
-        <Button onClick={showEditModal} className='primary' style={{fontSize: '14px'}}>  Edit  </Button>  
-        <Button onClick={showDeleteModal} className='type-primary' style={{ fontSize: '14px' }}> Delete  </Button>  
-        <Search  
-        placeholder="Search by Project Name, Created By or Description" onSearch={(e) => handleSearch(e)} enterButton onChange={(e) => handleSearchChange(e)}
-        style={{ minWidth: "300px", maxWidth: "300px", marginRight: "10px", marginBottom: "1px", maxHeight: "32px" }} 
-        />    
-        </div>  
         </div>
-        <Table className='Manage_Project' columns={columns}  dataSource={projectData} pagination={{ pageSize: 13 }} style={{overflowX:"auto"}}/> 
+
+
+        {/* RIGHT SIDE — ACTION BUTTONS + SEARCH */}
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <Button type="primary" onClick={showCreateModal}>Create</Button>
+            <Button onClick={showEditModal}>Edit</Button>
+            <Button danger onClick={showDeleteModal}>Delete</Button>
+
+            <Search
+            placeholder="Search projects"
+            onSearch={handleSearch}
+            onChange={handleSearchChange}
+            allowClear
+            style={{ width: 260 }}
+            />
+        </div>
+        </div>
+        
+
+        <Table 
+        className='Manage_Project'
+        columns={columns} 
+        rowKey="project_id"
+        rowSelection={rowSelection}
+        dataSource={projectData}
+        pagination={{ pageSize: 16 }} 
+        style={{overflowX:"auto"}}
+        /> 
          
         <Modal  
             title="Create Project"  
