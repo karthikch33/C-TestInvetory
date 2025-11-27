@@ -5,14 +5,17 @@ import { Layout } from "antd";
 
 import AppHeader from "../../layout/AppHeader/AppHeader";
 import SideMenu from "../../layout/SideMenu/SideMenu";
+import { FaProjectDiagram, FaUpload } from "react-icons/fa";
+import { MdOutlineWorkOutline } from "react-icons/md";
+import { GoHomeFill } from "react-icons/go";
 
 const { Content } = Layout;
 
 const items = [
-  { key: "/", label: "Home", icon: <i className="fas fa-home" /> },
-  { key: "/project/manageprojects", label: "Project", icon: <i className="fas fa-folder" /> },
-  { key: "/connections/flatfile", label: "Tables", icon: <i className="fas fa-upload" /> },
-  { key: "/workspace", label: "Workspace", icon: <i className="fas fa-briefcase" /> },
+  { key: "/", label: "Home", icon: <GoHomeFill /> },
+  { key: "/project/manageprojects", label: "Project", icon: <FaProjectDiagram /> },
+  { key: "/connections/flatfile", label: "Tables", icon: <FaUpload/> },
+  { key: "/workspace", label: "Workspace", icon: <MdOutlineWorkOutline /> },
 ];
 
 
@@ -46,8 +49,8 @@ export default function AppLayout() {
             overflowY:"scroll",
              backgroundRepeat:"no-repeat", 
              backgroundSize:"cover",
-              backgroundColor:"#fff",
-              backgroundImage: 'url("https://www.yash.com/wp-content/themes/html5blank-stable/images/services/service-offeringBG.png")'
+             backgroundColor:"#F7F9FC",
+              // backgroundImage: 'url("https://www.yash.com/wp-content/themes/html5blank-stable/images/services/service-offeringBG.png")'
           }}
           >
             <Outlet />

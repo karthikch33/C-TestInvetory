@@ -1,20 +1,23 @@
+import { FaProjectDiagram, FaUpload } from "react-icons/fa";
+import { MdOutlineWorkOutline } from "react-icons/md";
+
 export const cardsData = [
-    {
-        title: 'Project',
-        description: 'Manage Projects.',
-        icon: 'fas fa-folder',
-        link:'/project/manageprojects' 
-    },
-    {
-      title: 'Uploads',
-      description: 'Upload Your Files',
-      icon: 'fas fa-upload', 
-      link:'/connections/flatfile'
-    },
-    {
-      title: 'Work Space',
-      description: 'Extract & Transform with ease.',
-      icon: 'fas fa-briefcase', 
-      link:'/workspace'
-    }
+  {
+    title: "Projects",
+    description: "Manage all your projects",
+    icon: <FaProjectDiagram />,
+    link: "/project/manageprojects",
+  },
+  {
+    title: "Tables",
+    description: "Upload and manage tables",
+    icon: <FaUpload />,
+    link: "/connections/flatfile",
+  },
+  {
+    title: "Workspace",
+    description: "View your workspace",
+    icon: <MdOutlineWorkOutline />,
+    link: "/workspace",
+  },
 ];

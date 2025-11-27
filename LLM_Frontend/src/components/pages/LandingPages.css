@@ -1,16 +1,9 @@
-.LandingPage {  
-    display: flex;  
-    flex-direction: column;  
-    justify-content: center;  
-    align-items: center;  
-    max-height: 80vh;
-}  
-
-.row {  
-    width: 100%;          
-}  
-
-.col {  
-    padding-left: 0;     
-    padding-right: 0; 
-}
+.landing-container {
+    padding: 20px;
+  }
+  
+  .landing-card:hover {
+    transform: translateY(-5px);
+    transition: 0.2s ease;
+  }
+  

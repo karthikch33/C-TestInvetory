@@ -1,0 +1,52 @@
+.sidebar-profile {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .sidebar-profile:hover {
+    background: #e6f4ff;
+  }
+  
+  .profile-icon {
+    font-size: 32px;
+    color: #1677ff;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+  }
+  
+  .profile-role {
+    font-size: 12px;
+    color: #777;
+  }
+  
+  /* Collapsed Mode */
+  .collapsed-profile {
+    justify-content: center;
+    padding: 12px;
+  }
+  
+  .collapsed-profile .profile-info {
+    display: none;
+  }
+  
+  .collapsed-profile .profile-icon {
+    margin: 0 auto;
+  }
+  
