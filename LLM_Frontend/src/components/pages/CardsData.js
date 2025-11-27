@@ -2,7 +2,7 @@ export const cardsData = [
     {
         title: 'Project',
         description: 'Manage Projects.',
-        icon: 'fas fa-diagram-project',
+        icon: 'fas fa-folder',
         link:'/project/manageprojects' 
     },
     {
@@ -14,7 +14,7 @@ export const cardsData = [
     {
       title: 'Work Space',
       description: 'Extract & Transform with ease.',
-      icon: 'fas fa-brain', 
+      icon: 'fas fa-briefcase', 
       link:'/workspace'
     }
 ];
