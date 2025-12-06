@@ -10,13 +10,32 @@ import { getProjectsSlice } from './components/features/Project/projectSlice';
 import PageNotFound from './components/pages/PageNotFound';
 import WorkSpaceLayout from './components/pages/WorkSpace/WorkSpaceLayout';
 
-
-function App() {      
-      const dispatch = useDispatch();
-      useEffect(()=>{
-        dispatch(getProjectsSlice())
-},[dispatch]); 
+  function App() {
+    const dispatch = useDispatch();
   
+    // useEffect(() => {
+    //   const fetchProjects = async () => {
+    //     try {
+    //       // unwrap() throws automatically if thunk rejected
+    //       await dispatch(getProjectsSlice()).unwrap();
+  
+    //     } catch (error) {
+    //       // ERROR HANDLING
+    //       if (error?.status === 404) {
+    //         toast.info("No projects found");
+    //       } else if (error?.status === 500) {
+    //         toast.error("Server error while loading projects");
+    //       } else {
+    //         toast.error(error?.message || "Failed to load projects");
+    //       }
+    //     }
+    //   };
+  
+    //   fetchProjects();
+    // }, [dispatch]);
+    useEffect(()=>{
+      dispatch(getProjectsSlice())
+    },[dispatch]);
   return (
     <>
         <BrowserRouter>

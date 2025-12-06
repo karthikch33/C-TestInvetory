@@ -28,6 +28,12 @@ from dqtool.dqtool import DQTool
 sys.path.append('../DMtool')
 from DMtool.dmtool import DMTool
 
+#######################################################
+from django.db import transaction, DatabaseError
+import logging
+
+logger = logging.getLogger(__name__)
+
 @api_view(['GET'])
 def home(request):
   return HttpResponse("home Page")
@@ -55,22 +61,49 @@ def create_project(request):
     if project_name and Project.objects.filter(project_name=project_name).exists():
         return Response(
             {"error": "Project name already taken"},
-            status=status.HTTP_302_FOUND  # or status.HTTP_409_CONFLICT (standard)
+            status=status.HTTP_409_CONFLICT
         )
 
     serializer = ProjectSerializer(data=request.data)
+
     if serializer.is_valid():
-        serializer.save()
-        return Response({"project_name": serializer.data.get("project_name")}, status=status.HTTP_200_OK)
+        project = serializer.save()      # Save the project
+
+        full_data = ProjectSerializer(project).data  # ⭐ Serialize full saved row
+
+        return Response(full_data, status=status.HTTP_200_OK)  # ⭐ Return complete object
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['GET'])
 def list_projects(request):
-    projects = Project.objects.all()
-    serializer = ProjectSerializer(projects, many=True)
-    return Response(serializer.data)
+    try:
+        projects = Project.objects.all()
+
+        # If no projects found (optional check)
+        if not projects.exists():
+            return Response(
+                {"error": "No projects found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(
+            {"status": 200, "data": serializer.data},
+            status=status.HTTP_200_OK
+        )
+
+    except Exception as e:
+        # For logging (company standard)
+        print("List Projects Error:", str(e))
+
+        return Response(
+            {"error": "Internal Server Error"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
 
 @api_view(['GET'])
 def get_project(request, pk):
@@ -81,39 +114,67 @@ def get_project(request, pk):
     serializer = ProjectSerializer(project)
     return Response(serializer.data)
 
-# @api_view(['PUT'])
-# def update_project(request, pk):
-#     try:
-#         project = Project.objects.get(pk=pk)
-#     except Project.DoesNotExist:
-#         return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
-#     serializer = ProjectSerializer(project, data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 def update_project(request, pk):
+    logger.info(f"Update request received for project_id={pk}")
+
+    # Step 1: Get project
     try:
         project = Project.objects.get(pk=pk)
     except Project.DoesNotExist:
-        return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    # Check if project name already exists (excluding current project)
-    project_name = request.data.get("project_name")
-    if project_name and Project.objects.filter(project_name=project_name).exclude(pk=pk).exists():
+        logger.warning(f"Project {pk} not found")
         return Response(
-            {"error": "Project with this name already exists"},
-            status=status.HTTP_302_FOUND  # or use HTTP_409_CONFLICT for standards
+            {"success": False, "message": "Project not found"},
+            status=status.HTTP_404_NOT_FOUND
         )
 
-    serializer = ProjectSerializer(project, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"project_name": serializer.data.get("project_name")}, status=status.HTTP_200_OK)
+    # Step 2: Validate duplicate project name (excluding current project)
+    project_name = request.data.get("project_name")
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if (
+        project_name 
+        and Project.objects.filter(project_name=project_name)
+        .exclude(pk=pk)
+        .exists()
+    ):
+        logger.info(f"Duplicate project name attempted: {project_name}")
+        return Response(
+            {"success": False, "message": "Project with this name already exists"},
+            status=status.HTTP_409_CONFLICT     # Industry standard for conflict
+        )
+
+    # Step 3: Validate & update using serializer
+    serializer = ProjectSerializer(project, data=request.data, partial=True)  
+    # partial=True → allows updating only provided fields
+
+    if not serializer.is_valid():
+        logger.error(f"Validation failed: {serializer.errors}")
+        return Response(
+            {"success": False, "errors": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        serializer.save()
+        logger.info(f"Project {pk} updated successfully")
+
+        return Response(
+            {
+                "success": True,
+                "message": "Project updated successfully",
+                "updated_project": serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
+
+    except Exception as e:
+        logger.error(f"Error updating project {pk}: {str(e)}")
+        return Response(
+            {"success": False, "message": "Server error while updating project"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
 
 
 
@@ -137,21 +198,51 @@ def delete_tables_under_project(pid):
 
 @api_view(['DELETE'])
 def delete_project(request, pk):
+    logger.info(f"Delete request received for project_id={pk}")
+
+    # Step 1 — Get project
     try:
         project = Project.objects.get(pk=pk)
     except Project.DoesNotExist:
-        return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+        logger.warning(f"Project {pk} not found")
+        return Response(
+            {"success": False, "message": "Project not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
     project_name = project.project_name
-    delete_tables_under_project(project.project_id)
-    project.delete()
-    
+
+    # Step 2 — Delete dynamic tables (DDL cannot be inside atomic)
+    try:
+        delete_tables_under_project(project.project_id)
+        logger.info(f"Dynamic tables deleted for project {project.project_id}")
+    except Exception as e:
+        logger.error(f"Table deletion failed: {str(e)}")
+        return Response(
+            {"success": False, "message": "Failed to delete project tables"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    # Step 3 — Delete the project (NO atomic needed here)
+    try:
+        project.delete()
+        logger.info(f"Project {project_name} deleted successfully")
+    except Exception as e:
+        logger.error(f"Project deletion failed: {str(e)}")
+        return Response(
+            {"success": False, "message": "Project deletion failed"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    # Step 4 — Success response
     return Response(
-        {"project_name": project_name},
+        {
+            "success": True,
+            "message": "Project deleted successfully",
+            "deleted_project": project_name
+        },
         status=status.HTTP_200_OK
     )
-
-  
 
 
 
@@ -371,11 +462,31 @@ def list_files_by_project(request, project_id):
     serializer = FileSerializer(files, many=True)
     return Response(serializer.data)
 
+# @api_view(['GET'])
+# def list_files(request):
+#     files = File.objects.all()
+#     serializer = FileSerializer(files, many=True)
+#     return Response(serializer.data)
+
 @api_view(['GET'])
 def list_files(request):
-    files = File.objects.all()
-    serializer = FileSerializer(files, many=True)
-    return Response(serializer.data)
+    try:
+        files = File.objects.all()
+        if not files.exists():
+            return Response(
+                {"message" : "No Files Found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = FileSerializer(files, many=True)
+        return Response(
+            {"status" : 200,"data" : serializer.data},status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        print("List Files Error: ", str(e))
+        return Response({
+            "error" : "Internal Server Error"
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def get_file(request, pk):

@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import fileServices from "./fileService";
-import { toast } from "react-toastify";
  
 const initialState ={
     isError:false,
     isSucess:false,
     isPending:false,
-    file_connections : [],
+    files : []
 }
  
 export const getFileSlice = createAsyncThunk('file/getfile',async (thunkAPI)=>{
@@ -82,7 +81,8 @@ const fileSlice = createSlice({
             state.isError = false;
             state.isSucess = true;
             state.isPending = false;
-            state.file_connections = action?.payload;
+            console.log(action?.payload)
+            state.files = action?.payload;
         }).addCase(getFileSlice.rejected,(state)=>{
             state.isError = true;
             state.isPending = false;

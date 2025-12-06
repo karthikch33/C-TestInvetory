@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';  
 import { Input, Table, Button, Radio, message} from 'antd';  
-import { Link } from 'react-router-dom'; 
-import {useFormik} from 'formik'
-import * as yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteFileSlice, getFileSlice, renameFileSlice } from '../../../features/Connections/fileSlice';
+import { deleteFileSlice, getFileSlice } from '../../../features/Connections/fileSlice';
 import { CustomSelectManageProjects } from '../../CustomSelect';
-import  { CustomCreateFormFileModal, CustomDeleteModal, CustomRenameModal } from '../../CustomModal';
+import  { CustomCreateFormFileModal, CustomDeleteModal } from '../../CustomModal';
 import Meta from '../../../utils/Meta';
 const FlatFile = () => {  
 
@@ -21,7 +18,6 @@ const FlatFile = () => {
     const [selectProjectId,setSelectedProjectId] = useState(0);
     const [selectedRecord,setSelectedRecord] = useState(null);  
     const [openDeleteModal, setOpenDeleteModal] = useState(false);  
-    const [openRenameModal, setOpenRenameModal] = useState(false);  
     const [openCreateModal, setOpenCreateModal] = useState(false);   
 
     const {projects} = useSelector(state => state.project);
@@ -40,54 +36,7 @@ const FlatFile = () => {
         setAllProjects(projects);
     },[projects])         
  
-    const schema = yup.object({
-        file_name : yup  
-                .string()  
-                .required("File Name is required")  
-                .matches(  
-                    /^[a-zA-Z_.-]+$/,  
-                    'File name can only contain letters, underscores, periods, and hyphens.'  
-                )  
-                .trim()  
-                .notOneOf(['.', '', '_', '-'], 'File name cannot be just a dot, underscore, or hyphen.')  
-                .test('no-start-end-dot', 'File name cannot start or end with a dot.', (value) => {  
-                    return value && !(value.startsWith('.') || value.endsWith('.'));  
-                })  
-                .test('no-start-end-hyphen', 'File name cannot start or end with a hyphen.', (value) => {  
-                    return value && !(value.startsWith('-') || value.endsWith('-'));  
-                })  
-                .test('no-start-end-underscore', 'File name cannot start or end with an underscore.', (value) => {  
-                    return value && !(value.startsWith('_') || value.endsWith('_'));  
-                })  
-                .test('no-spaces', 'Spaces are not allowed in file name.', (value) => {  
-                    return value && !/\s/.test(value);  
-                }),
-    })
-   
-    const formik = useFormik({
-      initialValues:{
-          file_name:""
-      },
-      validationSchema:schema,
-      onSubmit : ()=>{
-        handleRename();
-        formik.resetForm();
-      }
-  })
- 
-    const columns = [  
-        {  
-            title: 'Select',  
-            dataIndex: 'selecteditem',  
-            render: (text, record) =>   {
-                return (<div style={{display:'flex',justifyContent:'center'}}>
-                <Radio  
-                    checked={selectedKey === record?.file_id}  
-                    onChange={() => handleRadioChange(record)}  
-                />  
-                </div>)
-            }
-        },  
+    const columns = [   
         {  
             title: 'File Name',  
             dataIndex: 'file_name',  
@@ -98,7 +47,6 @@ const FlatFile = () => {
     const loadFiles = (response)=>{
         const updatedColumnsData = []
         const loadedFiles = response?.payload?.data;
-        console.log(loadedFiles);
 
         loadedFiles?.forEach((field,i)=>{
             updatedColumnsData?.push({
@@ -193,26 +141,7 @@ const FlatFile = () => {
     const hideDeleteModal = () => {  
         setOpenDeleteModal(false); 
     };
-   
-    // const handleFileRename = () => {  
-    //     if(selectedRecord === null){
-    //         if(alertActive){
-    //             messageApi.info('Please Select a File')
-    //             setAlertActive(false);
-    //             setTimeout(()=>setAlertActive(true),3000);
-    //         }
-    //     }
-    //     else{
-    //     formik?.setFieldValue('file_name',selectedRecord?.file_name);
-    //     setOpenRenameModal(true);
-    //     }
-    // };  
 
-    const hideRenameModal = () => {  
-        setOpenRenameModal(false);  
-        formik.resetForm();
-    }; 
-    
     
     const handleDelete = ()=>{
         dispatch(deleteFileSlice(selectedRecord))
@@ -238,34 +167,16 @@ const FlatFile = () => {
          })
 
     }
- 
-    const handleRename = ()=>{
-        const rename_data = {
-            re_val : formik?.values?.file_name,
-            ...selectedRecord
-        }
-        dispatch(renameFileSlice(rename_data))
-        .then((response)=>{
-            if(response?.payload?.status === 200){
-                messageApi?.success(`${response?.payload?.data} is renamed`)
-            }
-            else{
-                messageApi.error(`${formik?.values?.file_name} failed to rename`)
-            }
-        })
-        .finally(()=>{
-            setSelectedKey(null);
-            setSelectedRecord(null);
 
-            dispatch(getFileSlice())
-            .then((response)=>{
-            if(response?.payload?.status === 200)  loadFiles(response);
-            else message?.error('Fetching Files Failed')
-            })
-
-            hideRenameModal();
-        })
-    }  
+    const rowSelection = {
+        type : 'radio',
+        selectedRowKeys : selectedKey ? [selectedKey] : [],
+        onChange : (keys, rows)=>{
+            setSelectedKey(keys[0]);
+            setSelectedRecord(rows[0]);
+        },
+     }
+    
  
     return (  
       <>
@@ -280,7 +191,6 @@ const FlatFile = () => {
             <div className='d-flex mx-4 gap-3'>
             <Button onClick={handleFileCreate} style={{ fontSize: '14px', marginRight:"10px" }}> Create </Button>   
             <Button onClick={handleFileDelete} style={{ fontSize: '14px', marginRight:"10px" }}>  Delete  </Button>  
-            {/* <Button onClick={handleFileRename} style={{ fontSize: '14px', marginRight:"10px" }}>  Rename  </Button>   */}
             <Search  
             placeholder="Search by File Name, File Type, Table Name, or Sheet"  
             onSearch={(e) => handleSearch(e)}  
@@ -289,7 +199,17 @@ const FlatFile = () => {
             style={{ minWidth: "300px", maxWidth: "300px", marginRight: "10px", marginBottom: "1px", maxHeight: "32px" }} />
             </div>                    
             </div>
-            <Table className='flatFile' columns={columns} dataSource={filesData} pagination={{ pageSize: 10}} style={{overflowX:"auto",marginTop:"10px"}}/>  
+
+            <Table
+             className='flatFile'
+             rowKey={"file_id"}
+             rowSelection={rowSelection}
+             columns={columns} 
+             dataSource={filesData} 
+             pagination={{ pageSize: 10}} 
+             style={{overflowX:"auto",marginTop:"10px"}}
+             />  
+
             <CustomCreateFormFileModal openCreateModal={openCreateModal} hideCreateModal={hideCreateModal} loadFiles={loadFiles}/>
  
             <CustomDeleteModal
@@ -297,10 +217,6 @@ const FlatFile = () => {
             {` `} {selectedRecord?.file_name}{` `} "</span>:''} {` `}Connection</>} hideModal={hideDeleteModal} open={openDeleteModal}
             performAction = {handleDelete} onCancel={hideDeleteModal} okText="OK" cancelText="CANCEL"/>
             
-            <CustomRenameModal  title={<>Rename { selectedRecord?.file_name !== undefined ?  <span style={{ color: "red",display:"inline" }}>
-            "{` `} {selectedRecord?.file_name}{` `} "</span>:''} {` `}Connection</>} open={openRenameModal} onSubmit={formik?.handleSubmit}
-            hideModal={hideRenameModal} value={formik?.values?.file_name} name={"file_name"} handleChange={formik?.handleChange}
-            blur={formik?.handleBlur} touched={formik?.touched?.file_name} error={formik?.errors?.file_name}/>
         </div>  
       </>
     );  

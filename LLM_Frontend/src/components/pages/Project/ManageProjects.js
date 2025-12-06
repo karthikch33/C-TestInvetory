@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';  
-import { Input, Table, Button, message, Modal, Space } from 'antd';  
+import { Input, Table, Button, message, Modal, Space, Spin } from 'antd';  
 import { useSelector, useDispatch } from 'react-redux';  
 import { useFormik } from "formik";   
 import * as yup from "yup"; 
-import { createProjectSlice, deleteProjectsSlice, getProjectsSlice, updateProjectsSlice } from '../../features/Project/projectSlice';  
-import { toast, ToastContainer } from 'react-toastify';
+import { createProjectSlice, deleteProjectsSlice, updateProjectsSlice } from '../../features/Project/projectSlice';  
+import { ToastContainer } from 'react-toastify';
 import CustomInput from '../CustomInput';
 import { FaFolderOpen } from "react-icons/fa";
 import Meta from '../../utils/Meta';
@@ -21,31 +21,18 @@ const ManageProjects = () => {
     const [alertActive,setAlertActive] = useState(true);  
     const [projectData,setProjectData] = useState();
     const [messageApi, contextHolder] = message.useMessage();
+    const [spinning, setSpinning] = useState(false);
+    const [tip,setTip] = useState('');
     const [partialProjectData,setPartialProjectData] = useState();
     
     const dispatch = useDispatch();  
     
-    const projects = useSelector(state => state?.project?.projects);
+    const { projects } = useSelector(state => state?.project);
 
     useEffect(() => { 
-        getValidFields(projects)
+        setPartialProjectData(projects)  
+        setProjectData(projects)
     }, [projects]); 
-
-    const getValidFields = (data)=>{
-        const partialDetails = []  
-        Array.isArray(data) && data?.forEach((field,index)=>{
-            partialDetails.push({
-              key : index,
-              project_id : field?.project_id,
-              project_name : field?.project_name,
-              description : field?.project_description,
-              created_at : formatDateString(field?.created_time),
-             created_by : 'aditya'
-            })
-          })
-        setPartialProjectData(partialDetails)  
-        setProjectData(partialDetails)
-    }
 
     const createSchema = yup.object().shape({
         project_name_create: yup
@@ -160,17 +147,6 @@ const ManageProjects = () => {
         }
     }
 
-    const formatDateString = (isoDate)=>{  
-        const date = new Date(isoDate);  
-        const day = String(date.getDate()).padStart(2, '0');  
-        const month = String(date.getMonth() + 1).padStart(2, '0');  
-        const year = date.getFullYear();  
-        const hours = String(date.getHours()).padStart(2, '0');  
-        const minutes = String(date.getMinutes()).padStart(2, '0');  
-        const seconds = String(date.getSeconds()).padStart(2, '0');  
-    
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;  
-    } 
 
     const showEditModal = () => { 
         if(selectedRecord === null)
@@ -225,107 +201,106 @@ const ManageProjects = () => {
     formik.resetForm();
     }
 
-    const handleCreate = (values) => {
-        const requiredFields = {
-            project_name : values?.project_name_create,
-            project_description : values?.project_description_create,
+    const handleCreate = async (values) => {
+        setSpinning(true);
+        setTip(`Creating project: ${values?.project_name_create}...`);
+    
+        const payload = {
+            project_name: values?.project_name_create,
+            project_description: values?.project_description_create,
+        };
+    
+        try {
+            const response = await dispatch(createProjectSlice(payload)).unwrap();
+            const createdName = response?.data?.project_name;
+    
+            message.success(`Project ${createdName} created successfully`);
+            hideCreateModal();
+    
+        } catch (error) {
+            if (error?.status === 409) {
+                message.info("Project already exists");
+            } else {
+                message.error(error?.message || "Project creation failed");
+            }
+        } finally {
+            setTimeout(() => {
+                setSpinning(false);
+                setTip('');
+            }, 3000);
         }
-         dispatch(createProjectSlice(requiredFields))
-            .then((response)=>{
-                if(response?.payload?.status === 200){
-                    toast.success(`Project ${response?.payload?.data?.project_name} Created Successfully`);
-                    hideCreateModal();
-                }
-                else if(response?.payload?.status === 302){
-                    toast.info(`Project Already Exists`)
-                }
-                else{
-                    toast.error(`Project Creation Failed`);
-                }
-            }
-        )
-        .finally(()=>{
-            try {
-                dispatch(getProjectsSlice())
-                .then((response)=>{
-                    console.log(response)
-                    if(response?.payload?.status === 200)
-                    getValidFields(response?.payload?.data)
-                })
-            } catch (error) {
-                toast.error('Project Fectch Failed');
-            }
-        })
-    }
-
-    const handleEdit = (values) => {  
-    if (!selectedRecord) {  
-        messageApi.info('Please Select a Project');  
-        return;  
-    }  
-        const data = { ...values, project_id: selectedRecord.project_id };
-        dispatch(updateProjectsSlice(data))
-        .then((response)=>{
-            console.log(response);
-            if(response?.payload?.status === 200){
-                toast.success(`Project ${response?.payload?.data?.project_name} Updated Successfully`);
-                setSelectedRecord(null);
-                setSelectedKey(null);
-                setOpenEditModal(false); 
-            }
-            else if(response?.payload?.status === 302){
-                toast.info(`Project Name already exists`);
-            }
-            else{
-                toast.error('Internal Server Error')
-            }
-        })
-        .finally(()=>{
-            try {
-                dispatch(getProjectsSlice())
-                .then((response)=>{
-                    if(response?.payload?.status === 200)
-                    getValidFields(response?.payload?.data)
-                })  
-            } catch (error) {
-                    toast.error('Project Fectch Failed');                
-            }
-        })
-    }; 
-
-    const handleDelete = () => {  
-        if(selectedRecord) {  
-            const data = {project_id : selectedRecord.project_id};
-            dispatch(deleteProjectsSlice(data))
-            .then((response)=>{
-                console.log(response)
-                if(response?.payload?.status === 200){
-                    toast.success(`${response?.payload?.data?.project_name} is deleted`);
-                }  
-                else{
-                    toast.error('Deletion Failed');
-                }
-            })
-            .catch(()=>{
-                toast.error('Server Error')
-            })
-            .finally(()=>{
-                try {
-                    dispatch(getProjectsSlice())
-                    .then((response)=>{
-                        if(response?.payload?.status === 200)
-                        getValidFields(response?.payload?.data)
-                    })
-                } catch (error) {
-                    toast.error('Project Fectch Failed');
-                }
-            hideDeleteModal();  
+    };
+    
+    const handleEdit = async (values) => {
+        if (!selectedRecord) {
+            messageApi.info("Please select a project");
+            return;
+        }
+    
+        setSpinning(true);
+        setTip(`Updating ${selectedRecord?.project_name} details...`);
+    
+        const payload = {
+            ...values,
+            project_id: selectedRecord.project_id,
+        };
+    
+        try {
+            const response = await dispatch(updateProjectsSlice(payload)).unwrap();
+            const updatedName = response?.data?.updated_project?.project_name;
+    
+            setOpenEditModal(false);
             setSelectedRecord(null);
-            })
+            setSelectedKey(null);
+    
+            message.success(`Project ${updatedName} updated successfully`);
+    
+        } catch (error) {
+            if (error?.status === 302 || error?.status === 409) {
+                message.info("Project name already exists");
+            } else {
+                message.error(error?.message || "Project update failed");
+            }
+        } finally {
+            setTimeout(() => {
+                setTip('');
+                setSpinning(false);
+            }, 3000);
         }
-    }; 
+    };
+    
+    const handleDelete = async () => {
+        if (!selectedRecord) return;
+    
+        setSpinning(true);
+        setTip(`Deleting project: ${selectedRecord?.project_name}...`);
+    
+        const payload = {
+            project_id: selectedRecord.project_id,
+        };
+    
+        try {
+            const response = await dispatch(deleteProjectsSlice(payload)).unwrap();
+            const deletedName = response?.data?.deleted_project;
+    
+            message.success(`${deletedName} deleted successfully`);
+    
+        } catch (error) {
+            message.error(error?.message || "Deletion failed");
+        } finally {
+            setTimeout(() => {
+                setSpinning(false);
+                setTip('');
+            }, 3000);
+    
+            hideDeleteModal();
+            setSelectedRecord(null);
+        }
+    };
+    
       
-    return (  
+    return (
+        <Spin spinning={spinning} tip={tip}>
         <div className='w-100 p-4'>  
         <Meta title="Projects"/>
 
@@ -390,20 +365,19 @@ const ManageProjects = () => {
             />
         </div>
         </div>
-        
 
             <Table
-        className="Manage_Project"
-        columns={columns}
-        rowKey="project_id"
-        rowSelection={rowSelection}
-        dataSource={projectData}
-        pagination={{ pageSize: 16 }}
-        style={{
-            overflowX: "auto",
-            // background: "var(--card-bg)",
-            color: "var(--text)",
-        }}
+            className="Manage_Project"
+            columns={columns}
+            rowKey="project_id"
+            rowSelection={rowSelection}
+            dataSource={projectData}
+            pagination={{ pageSize: 16 }}
+            style={{
+                overflowX: "auto",
+                // background: "var(--card-bg)",
+                color: "var(--text)",
+            }}
         />
 
          
@@ -513,6 +487,7 @@ const ManageProjects = () => {
 
         </div>  
         </div>  
+        </Spin>
     );  
 };  
 
