@@ -66,6 +66,40 @@ export const uploadExcelSlice = createAsyncThunk('file/uploadexcel',async (formd
  
  
 export const resetState = createAction("Reset_all")
+
+const formatDateString = (isoDate)=>{
+   const date = new Date(isoDate);
+
+   const day = String(date.getDate()).padStart(2, '0');
+   const month = String(date.getMonth()).padStart(2, '0')
+   const year = String(date.getFullYear()).padStart(4, '0')
+   const hours = String(date.getHours()).padStart(2, '0')
+   const minutes = String(date.getMinutes()).padStart(2 ,'0')
+   const seconds = String(date.getMilliseconds()).padStart(2, '0')
+   
+   return `${day} - ${month} - ${year}  ${hours}:${minutes}:${seconds}`
+}
+
+
+const loadFiles = (response)=>{
+    const payload_files = response?.payload?.data?.data;
+    const updated_files = []
+
+    Array.isArray(payload_files) && payload_files?.forEach((file)=>{        
+        updated_files.push({
+            file_id : file?.file_id,
+            file_type : file?.file_type,
+            file_name : file?.file_name,
+            sheet_name : file?.sheet_name,
+            created_at : formatDateString(file?.created_time),
+            created_by : 'aditya',
+            project_id : file?.project_id
+        })
+    })
+
+    return updated_files;
+    
+}
  
 const fileSlice = createSlice({
     name:"connection",
@@ -81,8 +115,7 @@ const fileSlice = createSlice({
             state.isError = false;
             state.isSucess = true;
             state.isPending = false;
-            console.log(action?.payload)
-            state.files = action?.payload;
+            state.files = loadFiles(action)
         }).addCase(getFileSlice.rejected,(state)=>{
             state.isError = true;
             state.isPending = false;

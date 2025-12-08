@@ -46,11 +46,11 @@ const FlatFile = () => {
 
     const loadFiles = (response)=>{
         const updatedColumnsData = []
-        const loadedFiles = response?.payload?.data;
+        const loadedFiles = response?.payload?.data?.data;
 
         loadedFiles?.forEach((field,i)=>{
             updatedColumnsData?.push({
-                file_id : field?.file_id, // ask id from backend
+                file_id : field?.file_id, 
                 file_type : field?.file_type,
                 file_name : field?.file_name,
                 sheet_name : field?.sheet_name,
