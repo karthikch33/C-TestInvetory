@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';  
+import React, { useEffect, useMemo, useState } from 'react';  
 import { Input, Table, Button, Radio, message} from 'antd';  
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteFileSlice, getFileSlice } from '../../../features/Connections/fileSlice';
@@ -9,32 +9,50 @@ const FlatFile = () => {
 
     const {Search} = Input
  
-    const [allProjects, setAllProjects] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [selectedKey, setSelectedKey] = useState(null);
     const [alertActive,setAlertActive] = useState(true);
     const [filesData,setFilesData] = useState([]);
-    const [partialFilesData,setPartialFilesData] = useState([]);
     const [selectProjectId,setSelectedProjectId] = useState(0);
     const [selectedRecord,setSelectedRecord] = useState(null);  
     const [openDeleteModal, setOpenDeleteModal] = useState(false);  
     const [openCreateModal, setOpenCreateModal] = useState(false);   
 
-    const {projects} = useSelector(state => state.project);
+    const { projects } = useSelector(state => state.project);
 
+    const allProjects = useMemo(()=> projects ,[projects])
+    
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(getFileSlice())
-        .then((response)=>{
-            if(response?.payload?.status === 200)  loadFiles(response);
-            else message?.error('Failed To Load Files')
-        })
-     }, []);
 
-     useEffect(()=>{
-        setAllProjects(projects);
-    },[projects])         
+    useEffect(()=>{
+        dispatch(getFileSlice())
+    },[])
+
+    const { files }  = useSelector(state => state.file)    
+    
+    const filterData = useMemo(()=>{
+        if(!files) return []
+
+        if(selectProjectId === 0){
+            return files
+        }
+
+        const project_id = Number(selectProjectId);
+        return files?.filter((file)=> file?.project_id === project_id)
+        
+    },[files,selectProjectId])
+
+    useEffect(() => {        
+       setFilesData(filterData)
+     }, [filterData]);
+
+     const handleProjectSelect = (e)=>{
+        setSelectedProjectId(Number(e));
+        setSelectedKey(null);
+        setSelectedRecord(null);
+    }
+
  
     const columns = [   
         {  
@@ -66,7 +84,7 @@ const FlatFile = () => {
         }
         else filteredProjects = updatedColumnsData
 
-        setPartialFilesData(updatedColumnsData);
+        // setfiles(updatedColumnsData);
         setFilesData(filteredProjects);
     }
 
@@ -74,14 +92,14 @@ const FlatFile = () => {
         let filteredData = []
         if(selectProjectId)
         {
-            filteredData = partialFilesData?.filter(item => (
+            filteredData = files?.filter(item => (
             item?.project_id === selectProjectId && (
                 item?.file_name?.toLowerCase()?.includes(e?.toLowerCase()) || item?.file_type?.toLowerCase()?.includes(e?.toLowerCase()) ||
                 item?.table_name?.toLowerCase()?.includes(e?.toLowerCase()) ||item?.sheet?.toLowerCase()?.includes(e?.toLowerCase()) )
             ))
         }
         else{
-            filteredData = partialFilesData?.filter(item => (
+            filteredData = files?.filter(item => (
                 item?.file_name?.toLowerCase()?.includes(e?.toLowerCase()) || item?.file_type?.toLowerCase()?.includes(e?.toLowerCase()) ||
                 item?.table_name?.toLowerCase()?.includes(e?.toLowerCase()) ||item?.sheet?.toLowerCase()?.includes(e?.toLowerCase()) )
             )
@@ -93,28 +111,10 @@ const FlatFile = () => {
         if(!e?.target?.value){
             let filteredProjects = []
             const project_id = Number(selectProjectId);
-            if(project_id) filteredProjects = partialFilesData?.filter(item => item?.project_id === project_id);
-            else filteredProjects = partialFilesData
+            if(project_id) filteredProjects = files?.filter(item => item?.project_id === project_id);
+            else filteredProjects = files
             setFilesData(filteredProjects);
         }
-    }
-
-    const handleRadioChange = (record) => {  
-        setSelectedKey(record?.file_id);
-        setSelectedRecord(record);
-    }; 
-
-    const handleProjectSelect = (e)=>{
-        setSelectedProjectId(Number(e));
-        if(e)
-        {
-            const project_id = Number(e);
-            const filteredProjects = partialFilesData?.filter(item => item?.project_id === project_id);
-            setFilesData(filteredProjects);
-        }
-        else setFilesData(partialFilesData);
-        setSelectedKey(null)
-        setSelectedRecord(null);
     }
 
     const handleFileCreate = () => {
